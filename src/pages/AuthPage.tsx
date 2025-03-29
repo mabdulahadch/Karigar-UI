@@ -30,6 +30,7 @@ const AuthPage: React.FC = () => {
   const { t } = useTranslation();
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [selectedRole, setSelectedRole] = useState<'customer' | 'provider'>('customer');
   const navigate = useNavigate();
   const { login } = useAuth();
   const location = useLocation();
@@ -45,38 +46,43 @@ const AuthPage: React.FC = () => {
     setActiveTab(key);
   };
 
+  const handleRoleChange = (value: 'customer' | 'provider') => {
+    setSelectedRole(value);
+  };
+
   const handlePhoneVerification = () => {
     // Simulate phone verification
     setIsPhoneVerified(true);
   };
 
   const handleLogin = (values: any) => {
-    console.log('Login:', values);
-    // Create mock user for login
+    console.log('Login:', values, 'Role:', selectedRole);
+    // Create user with selected role
     const userData = {
       id: '1',
-      name: 'Customer User',
+      name: `${selectedRole === 'customer' ? 'Customer' : 'Provider'} User`,
       email: values.email,
-      role: 'customer'
+      role: selectedRole
     };
     login(userData);
-    console.log('Navigating to customer dashboard', userData);
-    navigate('/customer/dashboard');
+    
+    // Navigate to the appropriate dashboard based on selected role
+    navigate(`/${selectedRole}/dashboard`);
   };
 
   const handleRegister = (values: any) => {
-    console.log('Register:', values);
-    // Create mock user for registration
+    console.log('Register:', values, 'Role:', selectedRole);
+    // Create user with selected role
     const userData = {
       id: '2',
-      name: 'Provider User',
+      name: `New ${selectedRole === 'customer' ? 'Customer' : 'Provider'}`,
       email: values.email,
-      role: 'provider'
+      role: selectedRole
     };
     login(userData);
-    console.log('Navigating to provider dashboard', userData);
-    // Make sure we navigate to the provider dashboard correctly
-    navigate('/provider/dashboard');
+    
+    // Navigate to the appropriate dashboard based on selected role
+    navigate(`/${selectedRole}/dashboard`);
   };
 
   const prefixSelector = (
@@ -157,7 +163,7 @@ const AuthPage: React.FC = () => {
             </Title>
             <p className="text-gray-600">{t('login_register_prompt')}</p>
           </div>
-          <Tabs defaultActiveKey="login" centered onChange={handleTabChange}>
+          <Tabs activeKey={activeTab} centered onChange={handleTabChange}>
             <TabPane tab={t('login')} key="login">
               <Form
                 name="login"
@@ -180,6 +186,12 @@ const AuthPage: React.FC = () => {
                     placeholder={t('password')}
                     size="large"
                   />
+                </Form.Item>
+                <Form.Item name="role" label={t('role')} initialValue="customer">
+                  <Select onChange={(value) => handleRoleChange(value as 'customer' | 'provider')} size="large">
+                    <Option value="customer">{t('customer')}</Option>
+                    <Option value="provider">{t('provider')}</Option>
+                  </Select>
                 </Form.Item>
                 <Form.Item>
                   <Button type="primary" htmlType="submit" className="w-full" size="large">
@@ -278,6 +290,12 @@ const AuthPage: React.FC = () => {
                       placeholder={t('confirm_password')}
                       size="large"
                     />
+                  </Form.Item>
+                  <Form.Item name="role" label={t('role')} initialValue="customer">
+                    <Select onChange={(value) => handleRoleChange(value as 'customer' | 'provider')} size="large">
+                      <Option value="customer">{t('customer')}</Option>
+                      <Option value="provider">{t('provider')}</Option>
+                    </Select>
                   </Form.Item>
                   <Form.Item
                     name="agreement"

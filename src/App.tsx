@@ -99,7 +99,17 @@ const App = () => (
               {/* Provider Routes */}
               <Route path="/provider/dashboard" element={
                 <ProtectedRoute allowedRole="provider">
-                  <ProviderDashboard />
+                  <ProviderProfile />
+                </ProtectedRoute>
+              } />
+              <Route path="/provider/profile" element={
+                <ProtectedRoute allowedRole="provider">
+                  <ProviderProfile />
+                </ProtectedRoute>
+              } />
+              <Route path="/provider/settings" element={
+                <ProtectedRoute allowedRole="provider">
+                  <ProviderProfile />
                 </ProtectedRoute>
               } />
               <Route path="/provider/:id" element={<ProviderProfile />} />
